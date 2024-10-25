@@ -9,7 +9,7 @@ import { ModalVelidation } from "../form-velidetion/ModalVeridation";
 
 
 
-export function TaskModal({ onOpenModal, onCloseModal, creatData }) {
+export function TaskModal({ onOpenModal, onCloseModal, creatData, editToMOdal, editData }) {
 
   
 
@@ -19,15 +19,32 @@ export function TaskModal({ onOpenModal, onCloseModal, creatData }) {
 
     
     
-    const onSubmit = (data) => {
-        creatData(data);
+    const onSubmit =  (data) => {
+        if (editData) {
+            editData(data)
+        }
+        else {
+            creatData(data);
+        }
         reset();
         onCloseModal()
+        
     }
+
+    
+
+    let formdata = editToMOdal || {
+        id: crypto.randomUUID(),
+        title: null,
+        description: null,
+        assignTo: null,
+        priority: null
+    }
+    
     return (
         <>
             <Modal dismissible show={onOpenModal} onClose={onCloseModal}>
-                <Modal.Header>Add New Task</Modal.Header>
+                <Modal.Header>{editToMOdal ? 'Edit task' : 'Add task'}</Modal.Header>
                 <Modal.Body>
                     <div className=" border p-4 rounded-md">
                         <form className="space-y-4" action="" onSubmit={handleSubmit(onSubmit)} >
@@ -35,14 +52,16 @@ export function TaskModal({ onOpenModal, onCloseModal, creatData }) {
                                 <div className="mb-1 block">
                                     <Label htmlFor="small" value="Title" />
                                 </div>
-                                <TextInput {...register("title",)} id="Title" type="text" sizing="md" />
+                                <input {...register('id')} type="hidden" defaultValue={formdata.id} />
+
+                                <TextInput  defaultValue={formdata.title}  {...register("title",)} id="Title" type="text" sizing="md" />
                                 {errors.title && <span className="text-red-500">{errors.title.message}</span>}
                             </div>
                             <div className="w-full">
                                 <div className="mb-1 block">
                                     <Label htmlFor="comment" value="Description " />
                                 </div>
-                                <Textarea {...register("description")}  id="Description" rows={3} />
+                                <Textarea defaultValue={formdata.description}  {...register("description")}  id="Description" rows={3} />
                                 {errors.description && <span className="text-red-500">{errors.description.message}</span>}
                                
                                
@@ -52,7 +71,7 @@ export function TaskModal({ onOpenModal, onCloseModal, creatData }) {
                                     <div className="mb-1 block">
                                         <Label htmlFor="countries" value="Assigned To" />
                                     </div>
-                                    <Select {...register("assignTo")}  id="parson-one" required>
+                                    <Select defaultValue={formdata.assignTo}  {...register("assignTo")}  id="parson-one" required>
                                         <option value={'parson-one'}>Parson-one</option>
                                         <option value={'parson-tow'}>Parson-tow</option>
                                         <option value={'parson-three'}>Parson-three</option>
@@ -64,7 +83,7 @@ export function TaskModal({ onOpenModal, onCloseModal, creatData }) {
                                     <div className="mb-1 block">
                                         <Label htmlFor="countries" value="Priority " />
                                     </div>
-                                    <Select {...register("priority")} id="Priority" required>
+                                    <Select defaultValue={formdata.priority}  {...register("priority")} id="Priority" required>
                                         <option value={'high'}>high</option>
                                         <option value={'midem'}>mideam</option>
                                         <option value={'low'}>low</option>
@@ -73,7 +92,7 @@ export function TaskModal({ onOpenModal, onCloseModal, creatData }) {
 
                                 </div>
                             </div>
-                            <Button  type="submit">Add Task</Button>
+                            <Button  type="submit">{editToMOdal ? 'Update task' : 'Add task'}</Button>
                         </form>
                     </div>
                 </Modal.Body>
