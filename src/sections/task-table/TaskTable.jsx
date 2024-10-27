@@ -23,6 +23,7 @@ function TaskTable() {
     let [openModal, setOpenModal] = useState(false)
     let [tasks, setTasks] = useState([])
     const [parmitionModal, setparmitionModal] = useState(false);
+    let [searchText, setsearchText] = useState()
 
 
     let creaHandler = (item) => {
@@ -65,6 +66,17 @@ function TaskTable() {
         tasks.length != 0 && setparmitionModal(true)
 
     }
+
+    let searchHandler = (text) => {
+        setsearchText(text)
+    }
+
+    let updateData = tasks.filter((item) => {
+        
+        return item.priority.toLowerCase().includes(searchText.toLowerCase());
+    })
+
+    
     
 
     return (
@@ -74,7 +86,7 @@ function TaskTable() {
                 <Button  onClick={clearButtonHandler}  color="success">Clear Tasks</Button>
             </div>
             <div className=" p-4 border mt-4 rounded-md dark:border-[#666]">
-                <TaskTableHeader />
+                <TaskTableHeader onsearch={searchHandler} />
 
                 <div className="overflow-x-auto mt-8">
                     <Table hoverable>
@@ -88,7 +100,7 @@ function TaskTable() {
 
                         </Table.Head>
                         <Table.Body className="divide-y">
-                            {tasks.length === 0 ? <EmptyData /> : tasks.map((item, index) => <TaskItem onDelet={deletHandler} onEdit={editHandler} data={item} index={index} key={item.id}/>)}
+                            {tasks.length === 0 ? <EmptyData /> : updateData.map((item, index) => <TaskItem onDelet={deletHandler} onEdit={editHandler} data={item} index={index} key={item.id}/>)}
                         </Table.Body>
                     </Table>
                 </div>
